@@ -1,8 +1,9 @@
 import abc
-from Deck import Deck
 import random
 
+from Deck import Deck
 from const import MESSAGES
+
 
 class AbstractPlayer(abc.ABC):
 
@@ -15,24 +16,26 @@ class AbstractPlayer(abc.ABC):
     def change_points(self):
         self.full_points = sum([card.points for card in self.cards])
 
+    def take_card(self, card):
+        self.cards.append(card)
+        self.change_points()
 
     @abc.abstractmethod
     def change_bet(self,  max_bet, min_bet):
         pass
 
+    @abc.abstractmethod
+    def ask_card(self):
+        pass
+
     def print_cards(self):
-        print(self, "bot data")
+        print(self, " data")
         for card in self.cards:
             print(card)
-        print(self.full_points)
-
-    def take_card(self, card):
-        self.cards.append(card)
-        self.change_points()
+        print('Full points: ', self.full_points)
 
 
 class Player(AbstractPlayer):
-
 
     def change_bet(self, max_bet, min_bet):
         while True:
@@ -50,6 +53,7 @@ class Player(AbstractPlayer):
         else:
             return False
 
+
 class Bot(AbstractPlayer):
 
     def __init__(self):
@@ -62,26 +66,24 @@ class Bot(AbstractPlayer):
         print(self, 'give: ', self.bet)
 
     def ask_card(self):
-        if self.max_points > self.full_points:
+        if self.full_points < self.max_points:
             return True
         else:
             return False
+
 
 class Dealer(AbstractPlayer):
 
     max_points = 17
 
-    def change_bet(self,  max_bet, min_bet):
+    def change_bet(self, max_bet, min_bet):
         """
         NOTE: This type is Dealer so it has no bets
-        :param max_bet:
-        :param min_bet:
-        :return:
-        """
-        raise Exception('This type is dealer so it has no bet')
+        """""
+        raise Exception('This type is dealer so it has no bets')
 
     def ask_card(self):
-        if self.max_points > self.full_points:
+        if self.full_points < self.max_points:
             return True
         else:
             return False
